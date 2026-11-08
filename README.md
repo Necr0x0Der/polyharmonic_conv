@@ -238,12 +238,13 @@ g_l = \frac{\partial L}{\partial A_l},
 \]
 
 the update for each output channel \(t\) is obtained by solving
-
+```
 \[
 \left(H_l^T H_l + \alpha I\right)\Delta Y_l[:,t]
 =
 -H_l^T g_l[:,t].
 \]
+```
 
 Then
 
@@ -268,12 +269,14 @@ For convolutional layers, \(H_l\) is assembled from all patch positions. For ful
    - for a convolutional layer, one row per patch position;
    - for a fully connected layer, one row per batch example.
 4. For each output channel \(t\), solve
+   ```
    \[
    \left(H_l^T H_l + \alpha I\right)\Delta Y_l[:,t]
    =
    -H_l^T g_l[:,t].
    \]
-5. Update
+   ```
+6. Update
    \[
    Y_l \leftarrow Y_l + \text{step}\cdot \Delta Y_l.
    \]
