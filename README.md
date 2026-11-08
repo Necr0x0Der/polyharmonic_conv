@@ -133,7 +133,7 @@ If `--channels` is supplied, its length defines the number of convolutional laye
 |---|---|---|
 | `--epochs` | number of epochs | `8` |
 | `--lr` | Adam learning rate | `1e-3` |
-| `--device` | `cpu` or `cuda` | `cpu` |
+| `--device` | `cpu` or `cuda` | `cuda` |
 
 ### Generalized-solver parameters
 
@@ -142,7 +142,7 @@ If `--channels` is supplied, its length defines the number of convolutional laye
 | `--epochs` | number of epochs | `8` |
 | `--alpha` | regularization in the linear solve | `1e-2` |
 | `--step` | step multiplier for \(\Delta Y\) | `1.0` |
-| `--device` | `cpu` or `cuda` | `cpu` |
+| `--device` | `cpu` or `cuda` | `cuda` |
 
 ## Padding and layer shapes
 
@@ -209,17 +209,15 @@ So the "kernel size" is supported as `--patch-size`. A larger patch means a larg
 
 `train_mnist_polyconv.py` trains the whole model with standard backpropagation and Adam.
 
-Measured examples on MNIST (CPU):
+Measured examples on MNIST:
 
 | Configuration | Epochs | Test accuracy |
 |---|---|---|
 | default 4 layers, stride 1, same padding | 1 | about **31.7%** (early, not converged) |
-| default 4 layers, stride 1, same padding | longer runs | converges more slowly; see the note below |
+| default 4 layers, stride 1, same padding | longer runs | doesn't converge |
 | 3 layers, stride 2, valid padding | 8 | about **96.5%** |
 | 3 layers, `--strides 2,2,1`, valid padding | 8 | about **96.9%** |
 | 3 layers, `--strides 2,2,1`, valid padding, lr \(2\cdot10^{-3}\) | 15 | about **97.8%** |
-
-The default 4-layer stride-1 architecture preserves the spatial map and is trainable, but it is substantially more expensive per epoch than the stride-2 variants. It needs more epochs to converge, and its long-run accuracy is not reported here. The stride-2 configurations above are cheaper and reach high accuracy faster.
 
 This is a proof-of-concept, not SOTA. A normal CNN on MNIST is around 99%, and the original fully connected cascade in the paper reports about 98.3%.
 
@@ -304,7 +302,7 @@ The part that is **not** the exact paper algorithm is:
   \]
   These formulas would need to be adapted to shared convolutional `Y` and to the multi-output setting.
 
-On MNIST (CPU), for the earlier 3-layer stride-2 valid-padding configuration, 8 epochs with \(\alpha=10^{-2}\) and step \(=1.0\):
+On MNIST, for the earlier 3-layer stride-2 valid-padding configuration, 8 epochs with \(\alpha=10^{-2}\) and step \(=1.0\):
 
 - final test accuracy: about **97.6%**.
 
@@ -331,7 +329,7 @@ python generalized_solver.py \
 
 This configuration reached about **97.6%** test accuracy.
 
-The folowing configuration
+UPDATE. The following configuration
 
 ```bash
 python generalized_solver.py \
@@ -346,9 +344,9 @@ python generalized_solver.py \
   --step 1.0
 ```
 
-reaches 98.65% test accuracy.
+reaches **98.65%** test accuracy.
 
-Adam, 15 epochs:
+With Adam, 15 epochs:
 
 ```bash
 python train_mnist_polyconv.py \
@@ -415,8 +413,6 @@ python train_mnist_polyconv.py --device cuda
 python generalized_solver.py --device cuda
 ```
 
-The model is built on CPU and then moved to the selected device, so the constellation, inverse matrix `U`, and trainable `Y` stay on the same device.
-
 Examples with explicit parameters:
 
 ```bash
@@ -468,7 +464,7 @@ python train_mnist_polyconv.py \
 
 The scripts download MNIST into a relative `./data` directory.
 
-The default 4-layer stride-1 model is computationally heavier than the stride-2 comparison. On CPU, reduce `--epochs`, `--batch-size`, or `--channels` for a quick run; on a GPU the same configuration is much faster.
+The default 4-layer stride-1 model is computationally heavier than the stride-2 comparison.
 
 ## Possible next steps
 
