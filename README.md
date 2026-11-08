@@ -154,7 +154,7 @@ The convolutional layer receives
 
 For patch size \(p\), stride \(s\), and padding \(d\), the output spatial size is
 
-\[
+```
 H_{\text{out}}
 =
 \left\lfloor \frac{H + 2d - p}{s} \right\rfloor + 1,
@@ -162,7 +162,7 @@ H_{\text{out}}
 W_{\text{out}}
 =
 \left\lfloor \frac{W + 2d - p}{s} \right\rfloor + 1.
-\]
+```
 
 With `--padding 0` this is a valid convolution: the spatial size shrinks.
 
@@ -239,11 +239,9 @@ g_l = \frac{\partial L}{\partial A_l},
 
 the update for each output channel \(t\) is obtained by solving
 ```
-\[
 \left(H_l^T H_l + \alpha I\right)\Delta Y_l[:,t]
 =
 -H_l^T g_l[:,t].
-\]
 ```
 
 Then
@@ -270,11 +268,9 @@ For convolutional layers, \(H_l\) is assembled from all patch positions. For ful
    - for a fully connected layer, one row per batch example.
 4. For each output channel \(t\), solve
    ```
-   \[
    \left(H_l^T H_l + \alpha I\right)\Delta Y_l[:,t]
    =
    -H_l^T g_l[:,t].
-   \]
    ```
 6. Update
    \[
